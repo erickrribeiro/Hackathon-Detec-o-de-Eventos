@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Epileptic Detector</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">Epileptic Detector</string>
+    <string name="ativado">Ativado</string>
+    <string name="perfil">Perfil</string>
+    <string name="contatos">Contatos</string>
+    <string name="alerta">Alerta</string>
+    <string name="title_activity_escolher_perfil">Selecionar Perfil</string>
+    <string name="perfil_moderado">Moderado</string>
+    <string name="perfil_preciso">Preciso</string>
+    <string name="explicacao_perfil">O perfil moderado possui um nível de precisão menor, enquanto o preciso está menos suscetível a erros</string>
+    <string name="title_activity_temporizador_alerta">Configurar Alerta</string>
+    <string name="explicacao_alerta">Tempo para o usuário cancelar um possível falso ataque</string>
+    <string name="desativado">Desativado</string>
+    <string name="title">Desmaio Detectado!</string>
+    <string name="msg_notificacao">Um possível desmaio foi detectado! Enviando SMS ao fim da contagem...</string>
+    <string name="notificacao_texto">Monitorando possível ataque</string>
+    <string name="title_activity_activity_escolher_perfil">Escoha um perfil</string>
+    <string name="title_activity_tempo_alerta">Tempo de Alerta</string>
+    <string name="txt_monitoramento_desligado">Monitoramento desligado!</string>
+    <string name="txt_monitoramento_ligado">Monitoramento ligado!</string>
+    <string name="title_activity_configuracao_contatos">Configuração dos Contatos</string>
+</resources>
