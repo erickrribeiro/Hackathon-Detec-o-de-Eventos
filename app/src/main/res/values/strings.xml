@@ -9,10 +9,8 @@
     <string name="perfil">Perfil</string>
     <string name="contatos">Contatos</string>
     <string name="alerta">Alerta</string>
-    <string name="title_activity_escolher_perfil">Selecionar Perfil</string>
     <string name="perfil_moderado">Moderado</string>
     <string name="perfil_preciso">Preciso</string>
-    <string name="explicacao_perfil">O perfil moderado possui um nível de precisão menor, enquanto o preciso está menos suscetível a erros</string>
     <string name="title_activity_temporizador_alerta">Configurar Alerta</string>
     <string name="explicacao_alerta">Tempo para o usuário cancelar um possível falso ataque</string>
     <string name="desativado">Desativado</string>
@@ -24,4 +22,4 @@
     <string name="txt_monitoramento_desligado">Monitoramento desligado!</string>
     <string name="txt_monitoramento_ligado">Monitoramento ligado!</string>
     <string name="title_activity_configuracao_contatos">Configuração dos Contatos</string>
-    </resources>
+</resources>

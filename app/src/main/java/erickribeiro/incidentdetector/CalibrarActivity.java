@@ -6,7 +6,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import erickribeiro.incidentdetector.util.SharedPreferenceManager;
@@ -16,7 +15,7 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_escolher_perfil);
+        setContentView(R.layout.activity_calibrar);
 
         prefAlerta = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 

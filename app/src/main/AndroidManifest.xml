@@ -41,7 +41,8 @@
 
         <activity
             android:name=".CalibrarActivity"
-            android:label="@string/title_activity_activity_calibrar" >
+            android:label="@string/title_activity_activity_calibrar"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".TempoAlertaActivity"
