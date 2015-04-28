@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="txt_desativado">Desativado</string>
+    <string name="title_activity_history">Histórico de Incidentes</string>
     <string name="app_name">Incident Detector</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>

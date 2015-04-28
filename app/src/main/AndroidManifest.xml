@@ -52,6 +52,11 @@
             android:name=".ConfiguracaoContatosActivity"
             android:label="@string/title_activity_configuracao_contatos" >
         </activity>
+
+        <activity
+            android:name=".HistoryActivity"
+            android:label="@string/title_activity_history" >
+        </activity>
     </application>
 
 </manifest>

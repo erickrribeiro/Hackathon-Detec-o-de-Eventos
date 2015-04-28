@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@drawable/list_selector">
+
+    <ImageView
+        android:src="@drawable/checkv"
+        android:id="@+id/thumbnail"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:adjustViewBounds="true"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false" />
+
+    <!-- Movie Title -->
+    <TextView
+        android:id="@+id/title"
+        android:textColor="#666666"
+        android:text="Incidente detectado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/thumbnail"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:textSize="@dimen/title"
+        android:textStyle="bold" />
+
+    <!-- Rating -->
+    <TextView
+        android:id="@+id/rating"
+        android:textColor="#888888"
+        android:text="Mensagens foram inviadas para os contatos cadastrados."
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_marginTop="1dip"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:textSize="@dimen/rating"
+        android:layout_marginRight="5dp" />
+
+    <!-- Genre -->
+    <TextView
+        android:id="@+id/genre"
+        android:text="01:21"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rating"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:textColor="#666666"
+        android:textSize="@dimen/genre" />
+
+    <!-- Release Year -->
+    <TextView
+        android:id="@+id/releaseYear"
+        android:text="27/04/2015"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#888888"
+        android:textSize="10dip"
+        android:layout_above="@+id/rating"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="5dp" />
+
+</RelativeLayout>
