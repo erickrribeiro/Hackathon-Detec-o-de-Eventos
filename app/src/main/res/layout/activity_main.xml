@@ -41,7 +41,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:id="@+id/img_agenda"
-        android:background="@drawable/img_relatorio"
+        android:background="@drawable/img_relatorio_cinza"
         android:layout_below="@+id/img_ativar"
         android:layout_alignLeft="@+id/img_ativar"
         android:layout_alignStart="@+id/img_ativar"

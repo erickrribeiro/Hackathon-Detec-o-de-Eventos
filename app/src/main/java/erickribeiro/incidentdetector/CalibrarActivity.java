@@ -29,13 +29,10 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.img_moderado:
+            case R.id.button_iniciar_calibracao:
                 Toast.makeText(getApplicationContext(), "Perfil moderado selecionado.", Toast.LENGTH_LONG).show();
                 prefAlerta.edit().putString(SharedPreferenceManager.CHAVE_PERFIL, "0").apply();
                 break;
-            case R.id.img_preciso:
-                Toast.makeText(getApplicationContext(), "Perfil preciso selecionado.", Toast.LENGTH_LONG).show();
-                prefAlerta.edit().putString(SharedPreferenceManager.CHAVE_PERFIL, "1").apply();
         }
     }
 }
