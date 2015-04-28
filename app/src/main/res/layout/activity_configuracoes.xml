@@ -1,0 +1,64 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    android:background="#000000">
+
+    <ImageButton
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/img_agenda"
+        android:clickable="true"
+        android:background="@drawable/agenda"
+        android:layout_marginTop="150dp"
+        android:layout_marginLeft="30dp"
+         />
+
+    <ImageButton
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/img_alerta"
+        android:clickable="true"
+        android:background="@drawable/alerta"
+        android:layout_alignTop="@+id/img_agenda"
+        android:layout_marginLeft="220dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Agenda"
+        android:id="@+id/textView5"
+        android:textColor="#ffffffff"
+        android:layout_below="@+id/img_agenda"
+        android:layout_marginTop="20dp"
+        android:layout_alignLeft="@+id/img_agenda"
+        android:layout_marginLeft="25dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Alerta"
+        android:id="@+id/textView6"
+        android:textColor="#ffffffff"
+        android:layout_below="@+id/img_alerta"
+        android:layout_marginTop="20dp"
+        android:layout_alignLeft="@+id/img_alerta"
+        android:layout_marginLeft="35dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/textView7"
+        android:textColor="#ffffffff"
+        android:textSize="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
