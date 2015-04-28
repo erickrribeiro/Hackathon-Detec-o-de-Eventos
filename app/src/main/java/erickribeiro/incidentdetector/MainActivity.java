@@ -20,6 +20,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -27,6 +28,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import erickribeiro.incidentdetector.configuracao.Contato;
+import erickribeiro.incidentdetector.databe.HistoryContract;
 import erickribeiro.incidentdetector.servico.EpilepsyHeuristicService;
 import erickribeiro.incidentdetector.util.GPSTracker;
 import erickribeiro.incidentdetector.util.SharedPreferenceManager;
@@ -79,8 +81,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
         imgAgenda.setOnClickListener(this);
 
         /** Verificando se houve algum desmaio detectado pelo sistema de monitoramento... **/
-        //Tesdsdsdsdjsdjfhjsdfhjuh
-        //hsdjfhjsdghfjsdgjfgsdhgf
         if(getIntent().hasExtra("flagDesmaioDetectadoMonitoramento")) {
             Bundle extras = getIntent().getExtras();
             flagDesmaioDetectadoMonitoramento = extras.getBoolean("flagDesmaioDetectadoMonitoramento");
@@ -136,7 +136,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
                 break;
 
             case R.id.img_agenda:
-                intent = new Intent(getApplicationContext(), ConfiguracaoContatosActivity.class);
+                intent = new Intent(getApplicationContext(), HistoryActivity.class);
                 startActivity(intent);
                 break;
             default:
@@ -147,6 +147,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
     /***
      * Método responsável por gerar uma mensagem que será mostrada ao usuario informando que um possivel desmaio foi detectado.
      */
+
+    boolean acao = false;
     public void showDialogDesmaio(){
         contato = new Contato(this);
         // Prepara o Dialog informando o título, mensagem e cria o Positive Button
@@ -200,6 +202,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
             public void onFinish(){
                 contato.enviarSmsParaContatos();
                 alert.dismiss();
+
+                HistoryContract historyContract = new HistoryContract(getApplicationContext());
+                historyContract.insert(true);
+                acao =  true;
+                Log.d("TAG","terminou");
             }
         }.start();
 
@@ -213,6 +220,12 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
                     objVibrator.cancel(); // Faz o celular parar de vibrar...
 
                     objRing.stop(); // Para de tocar a musica...
+
+                    if(!acao) {
+                        Log.d("TAG", "cancelado");
+                        HistoryContract historyContract = new HistoryContract(getApplicationContext());
+                        historyContract.insert(false);
+                    }
                 }catch (Exception e) {}
             }
         });
