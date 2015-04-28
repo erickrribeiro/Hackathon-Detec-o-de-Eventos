@@ -50,7 +50,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
     int contSms = 0;
 
     private ImageButton imgAtivado;
-    private ImageButton imgPerfil;
+    private ImageButton imgCalibracao;
     private ImageButton imgAlerta;
     private ImageButton imgAgenda;
 
@@ -67,14 +67,14 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
         prefAlerta = PreferenceManager.getDefaultSharedPreferences(this);
 
         imgAtivado = (ImageButton) findViewById(R.id.img_ativar);
-        imgPerfil = (ImageButton) findViewById(R.id.img_perfil);
+        imgCalibracao = (ImageButton) findViewById(R.id.img_calibracao);
         imgAlerta = (ImageButton) findViewById(R.id.img_alerta);
         imgAgenda = (ImageButton) findViewById(R.id.img_agenda);
 
         txtAtivado = (TextView) findViewById(R.id.txt_ativado);
 
         imgAtivado.setOnClickListener(this);
-        imgPerfil.setOnClickListener(this);
+        imgCalibracao.setOnClickListener(this);
         imgAlerta.setOnClickListener(this);
         imgAgenda.setOnClickListener(this);
 
@@ -125,8 +125,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
                 }
                 break;
 
-            case R.id.img_perfil:
-                intent = new Intent(getApplicationContext(), EscolherPerfilActivity.class);
+            case R.id.img_calibracao:
+                intent = new Intent(getApplicationContext(), CalibrarActivity.class);
                 startActivity(intent);
                 break;
 

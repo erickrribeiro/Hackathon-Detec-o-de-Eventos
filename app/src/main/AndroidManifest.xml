@@ -40,8 +40,8 @@
             android:enabled="true" />
 
         <activity
-            android:name=".EscolherPerfilActivity"
-            android:label="@string/title_activity_escolher_perfil" >
+            android:name=".CalibrarActivity"
+            android:label="@string/title_activity_activity_calibrar" >
         </activity>
         <activity
             android:name=".TempoAlertaActivity"
