@@ -131,7 +131,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
                 break;
 
             case R.id.img_alerta:
-                intent = new Intent(getApplicationContext(), TempoAlertaActivity.class);
+                intent = new Intent(getApplicationContext(), ConfiguracoesActivity.class);
                 startActivity(intent);
                 break;
 

@@ -42,7 +42,7 @@
         <activity
             android:name=".CalibrarActivity"
             android:label="@string/title_activity_activity_calibrar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".TempoAlertaActivity"
@@ -52,10 +52,13 @@
             android:name=".ConfiguracaoContatosActivity"
             android:label="@string/title_activity_configuracao_contatos" >
         </activity>
-
         <activity
             android:name=".HistoryActivity"
             android:label="@string/title_activity_history" >
+        </activity>
+        <activity
+            android:name=".ConfiguracoesActivity"
+            android:label="@string/title_activity_configuracoes" >
         </activity>
     </application>
 
