@@ -57,8 +57,22 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
 
     private final double LIMITE_ACELERACAO_PICO_INFERIOR = 7;
     private final double LIMITE_ACELERACAO_PICO_SUPERIOR = 12;
-    double maiorVariacaoModAceleracao = 0;
-    double menorVariacaoModAceleracao = 0;
+    private double maiorVariacaoModAceleracao = 0;
+    private double menorVariacaoModAceleracao = 0;
+    private long timestampMaiorVariacaoModAceleracao;
+    private long timestampMenorVariacaoModAceleracao;
+
+    private double menorVariacaoModAceleracao_Salto1 = 0;
+    private double maiorVariacaoModAceleracao_Salto1 = 0;
+    private long tempoEntreMenorMaiorPico_Salto1 = 0;
+
+    private double menorVariacaoModAceleracao_Salto2 = 0;
+    private double maiorVariacaoModAceleracao_Salto2 = 0;
+    private long tempoEntreMenorMaiorPico_Salto2 = 0;
+
+    private double menorVariacaoModAceleracao_Salto3 = 0;
+    private double maiorVariacaoModAceleracao_Salto3 = 0;
+    private long tempoEntreMenorMaiorPico_Salto3 = 0;
 
     private final double MARGEM_ERRO_AMOSTRAGEM_ACELERACAO_SINAL_ESTABILIZADO = 0.8;
     private final int JANELA_TEMPO_AMOSTRAGEM_ACELERACAO = 4; //(EM MILISSEGUNDOS) JANELA DE TEMPO DE CAPTURA DOS DADOS DA ACELERACAO.
@@ -70,11 +84,14 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
     private boolean flagCelularProxAoCorpo = false;
 
     private Button buttonIniciarCalibracao;
+    private Button buttonAjuda;
     private ImageView passo_1;
     private ImageView passo_2;
     private ImageView passo_3;
     private ImageView passo_4;
     private ImageView passo_5;
+    private int qtdClicksPasso5 = 0;
+    private final int QTD_CLICKS_EXIBIR_TOAST_IMAGEM_5 = 3; //Quantidade de clicks para exibir o toast de informacoes do processo de calibracao.
 
     // Iniciando objetos de musica do android...
     Uri objNotification;
@@ -91,11 +108,15 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
         buttonIniciarCalibracao = (Button) findViewById(R.id.button_iniciar_calibracao);
         buttonIniciarCalibracao.setOnClickListener(this);
 
+        buttonAjuda = (Button) findViewById(R.id.button_ajuda);
+        buttonAjuda.setOnClickListener(this);
+
         passo_1 = (ImageView) findViewById(R.id.imageView1);
         passo_2 = (ImageView) findViewById(R.id.imageView2);
         passo_3 = (ImageView) findViewById(R.id.imageView3);
         passo_4 = (ImageView) findViewById(R.id.imageView4);
         passo_5 = (ImageView) findViewById(R.id.imageView5);
+        passo_5.setOnClickListener(this);
 
         // Inicializando o servico...
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -108,9 +129,6 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
         mSensorManager.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
 
         prefCalibracao = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if(prefCalibracao.getString(SharedPreferenceManager.CHAVE_PERFIL, SharedPreferenceManager.VALOR_PADRAO_PERFIL)
-                .equals(SharedPreferenceManager.VALOR_PADRAO_PERFIL)){
-        }
 
         /** BEGIN: Iniciando objetos de musica do android... **/
         objNotification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -149,6 +167,27 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
 
                     resetarVariaveisCalibracao();
                 }
+                break;
+
+            case R.id.imageView5:
+                qtdClicksPasso5++;
+
+                if(qtdClicksPasso5 == QTD_CLICKS_EXIBIR_TOAST_IMAGEM_5) {
+                    double pref_key_menor_pico_inferior = Double.valueOf(prefCalibracao.getString(SharedPreferenceManager.CHAVE_MENOR_PICO_INFERIOR, SharedPreferenceManager.VALOR_PADRAO_MENOR_PICO_INFERIOR));
+                    double pref_key_maior_pico_inferior = Double.valueOf(prefCalibracao.getString(SharedPreferenceManager.CHAVE_MAIOR_PICO_INFERIOR, SharedPreferenceManager.VALOR_PADRAO_MAIOR_PICO_INFERIOR));
+                    int pref_key_tempo_entre_menor_maior_pico = Integer.valueOf(prefCalibracao.getString(SharedPreferenceManager.CHAVE_TEMPO_ENTRE_MENOR_MAIOR_PICO, SharedPreferenceManager.VALOR_PADRAO_TEMPO_ENTRE_MENOR_MAIOR_PICO));
+
+                    Toast.makeText(getApplicationContext(),
+                            " Inf: " + Double.toString(pref_key_menor_pico_inferior) +
+                            " Sup: " + Double.toString(pref_key_maior_pico_inferior) +
+                            " Tempo: " + Integer.toString(pref_key_tempo_entre_menor_maior_pico), Toast.LENGTH_LONG).show();
+
+                    qtdClicksPasso5 = 0;
+                }
+                break;
+
+            case R.id.button_ajuda:
+                Toast.makeText(getApplicationContext(), "Exibir vídeo tutorial...", Toast.LENGTH_LONG).show();
                 break;
         }
     }
@@ -239,6 +278,8 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
 
         maiorVariacaoModAceleracao = 0;
         menorVariacaoModAceleracao = ACELERACAO_NORMAL_GRAVIDADE;
+        timestampMenorVariacaoModAceleracao = 0;
+        timestampMaiorVariacaoModAceleracao = 0;
 
         timestampInicialCalibracao = 0;
         timestampInicialCalibracao_Salto_1 = 0;
@@ -254,6 +295,18 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
         passo_3.setImageResource(R.drawable.passo_03_cinza);
         passo_4.setImageResource(R.drawable.passo_04_cinza);
         passo_5.setImageResource(R.drawable.passo_05_cinza);
+
+        menorVariacaoModAceleracao_Salto1 = 0;
+        maiorVariacaoModAceleracao_Salto1 = 0;
+        tempoEntreMenorMaiorPico_Salto1 = 0;
+
+        menorVariacaoModAceleracao_Salto2 = 0;
+        maiorVariacaoModAceleracao_Salto2 = 0;
+        tempoEntreMenorMaiorPico_Salto2 = 0;
+
+        menorVariacaoModAceleracao_Salto3 = 0;
+        maiorVariacaoModAceleracao_Salto3 = 0;
+        tempoEntreMenorMaiorPico_Salto3 = 0;
 
         objRing.stop();
         objRingFimCalibracao.stop();
@@ -282,7 +335,7 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
                     {
                         flagCelularProxAoCorpo = false;
                     }
-                    Toast.makeText(getApplicationContext(), "Incident Detector - Proximidade Working: " + Double.toString(proximityValue), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Incident Detector - Proximidade: " + Double.toString(proximityValue), Toast.LENGTH_SHORT).show();
                     break;
 
                 case Sensor.TYPE_ACCELEROMETER:
@@ -321,6 +374,8 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
                         if(verificarEstabilizacaoAcelerometro(timestampInicialCalibracao_Salto_1)) {
                             maiorVariacaoModAceleracao = obterMaiorVariacaoModAceleracao();
                             menorVariacaoModAceleracao = obterMenorVariacaoModAceleracao();
+                            timestampMenorVariacaoModAceleracao = 0;
+                            timestampMaiorVariacaoModAceleracao = 0;
 
                             estadoAtualCalibracao = ESTADO_PRIMEIRO_SALTO_COLETAR_DADOS;
 
@@ -336,17 +391,28 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
                         gravarDadosAcelerometro(moduloVetorAceleracao, timestampInicialCalibracao);
 
                         // Detecta o menor pico de aceleracao
-                        if(moduloVetorAceleracao < menorVariacaoModAceleracao)
+                        if(moduloVetorAceleracao < menorVariacaoModAceleracao) {
                             menorVariacaoModAceleracao = moduloVetorAceleracao;
+                            timestampMenorVariacaoModAceleracao = System.currentTimeMillis();
+                        }
 
                         // Detecta o maior pico de aceleracao
-                        if(moduloVetorAceleracao >= maiorVariacaoModAceleracao)
+                        if(moduloVetorAceleracao >= maiorVariacaoModAceleracao) {
                             maiorVariacaoModAceleracao = moduloVetorAceleracao;
+                            timestampMaiorVariacaoModAceleracao = System.currentTimeMillis();
+                        }
 
                         if(flagColetarDadosSalto1)
                         {
                             if(verificarEstabilizacaoAcelerometro(timestampInicialCalibracao_Salto_1)) {
-                                Toast.makeText(getApplicationContext(), "Inf: " + Double.toString(menorVariacaoModAceleracao) + " Sup: " + Double.toString(maiorVariacaoModAceleracao), Toast.LENGTH_LONG).show();
+                                menorVariacaoModAceleracao_Salto1 = menorVariacaoModAceleracao;
+                                maiorVariacaoModAceleracao_Salto1 = maiorVariacaoModAceleracao;
+                                tempoEntreMenorMaiorPico_Salto1 = timestampMaiorVariacaoModAceleracao - timestampMenorVariacaoModAceleracao;
+
+                                Toast.makeText(getApplicationContext(),
+                                        " Inf: " + Double.toString(menorVariacaoModAceleracao_Salto1) +
+                                        " Sup: " + Double.toString(maiorVariacaoModAceleracao_Salto1) +
+                                        " Tempo: " + Long.toString(tempoEntreMenorMaiorPico_Salto1), Toast.LENGTH_LONG).show();
 
                                 timestampInicialCalibracao_Salto_2 = System.currentTimeMillis();
                                 estadoAtualCalibracao = ESTADO_SEGUNDO_SALTO_ESTABILIZAR_SENSORES;
@@ -370,6 +436,8 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
                         if(verificarEstabilizacaoAcelerometro(timestampInicialCalibracao_Salto_2)) {
                             maiorVariacaoModAceleracao = obterMaiorVariacaoModAceleracao();
                             menorVariacaoModAceleracao = obterMenorVariacaoModAceleracao();
+                            timestampMenorVariacaoModAceleracao = 0;
+                            timestampMaiorVariacaoModAceleracao = 0;
 
                             estadoAtualCalibracao = ESTADO_SEGUNDO_SALTO_COLETAR_DADOS;
 
@@ -385,17 +453,28 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
                         gravarDadosAcelerometro(moduloVetorAceleracao, timestampInicialCalibracao);
 
                         // Detecta o menor pico de aceleracao
-                        if(moduloVetorAceleracao < menorVariacaoModAceleracao)
+                        if(moduloVetorAceleracao < menorVariacaoModAceleracao) {
                             menorVariacaoModAceleracao = moduloVetorAceleracao;
+                            timestampMenorVariacaoModAceleracao = System.currentTimeMillis();
+                        }
 
                         // Detecta o maior pico de aceleracao
-                        if(moduloVetorAceleracao >= maiorVariacaoModAceleracao)
+                        if(moduloVetorAceleracao >= maiorVariacaoModAceleracao) {
                             maiorVariacaoModAceleracao = moduloVetorAceleracao;
+                            timestampMaiorVariacaoModAceleracao = System.currentTimeMillis();
+                        }
 
                         if(flagColetarDadosSalto2)
                         {
                             if(verificarEstabilizacaoAcelerometro(timestampInicialCalibracao_Salto_2)) {
-                                Toast.makeText(getApplicationContext(), "Inf: " + Double.toString(menorVariacaoModAceleracao) + " Sup: " + Double.toString(maiorVariacaoModAceleracao), Toast.LENGTH_LONG).show();
+                                menorVariacaoModAceleracao_Salto2 = menorVariacaoModAceleracao;
+                                maiorVariacaoModAceleracao_Salto2 = maiorVariacaoModAceleracao;
+                                tempoEntreMenorMaiorPico_Salto2 = timestampMaiorVariacaoModAceleracao - timestampMenorVariacaoModAceleracao;
+
+                                Toast.makeText(getApplicationContext(),
+                                        " Inf: " + Double.toString(menorVariacaoModAceleracao_Salto2) +
+                                        " Sup: " + Double.toString(maiorVariacaoModAceleracao_Salto2) +
+                                        " Tempo: " + Long.toString(tempoEntreMenorMaiorPico_Salto2), Toast.LENGTH_LONG).show();
 
                                 timestampInicialCalibracao_Salto_3 = System.currentTimeMillis();
                                 estadoAtualCalibracao = ESTADO_TERCEIRO_SALTO_ESTABILIZAR_SENSORES;
@@ -419,6 +498,8 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
                         if(verificarEstabilizacaoAcelerometro(timestampInicialCalibracao_Salto_3)) {
                             maiorVariacaoModAceleracao = obterMaiorVariacaoModAceleracao();
                             menorVariacaoModAceleracao = obterMenorVariacaoModAceleracao();
+                            timestampMenorVariacaoModAceleracao = 0;
+                            timestampMaiorVariacaoModAceleracao = 0;
 
                             estadoAtualCalibracao = ESTADO_TERCEIRO_SALTO_COLETAR_DADOS;
 
@@ -434,17 +515,28 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
                         gravarDadosAcelerometro(moduloVetorAceleracao, timestampInicialCalibracao);
 
                         // Detecta o menor pico de aceleracao
-                        if(moduloVetorAceleracao < menorVariacaoModAceleracao)
+                        if(moduloVetorAceleracao < menorVariacaoModAceleracao) {
                             menorVariacaoModAceleracao = moduloVetorAceleracao;
+                            timestampMenorVariacaoModAceleracao = System.currentTimeMillis();
+                        }
 
                         // Detecta o maior pico de aceleracao
-                        if(moduloVetorAceleracao >= maiorVariacaoModAceleracao)
+                        if(moduloVetorAceleracao >= maiorVariacaoModAceleracao) {
                             maiorVariacaoModAceleracao = moduloVetorAceleracao;
+                            timestampMaiorVariacaoModAceleracao = System.currentTimeMillis();
+                        }
 
                         if(flagColetarDadosSalto3)
                         {
                             if(verificarEstabilizacaoAcelerometro(timestampInicialCalibracao_Salto_3)) {
-                                Toast.makeText(getApplicationContext(), "Inf: " + Double.toString(menorVariacaoModAceleracao) + " Sup: " + Double.toString(maiorVariacaoModAceleracao), Toast.LENGTH_LONG).show();
+                                menorVariacaoModAceleracao_Salto3 = menorVariacaoModAceleracao;
+                                maiorVariacaoModAceleracao_Salto3 = maiorVariacaoModAceleracao;
+                                tempoEntreMenorMaiorPico_Salto3 = timestampMaiorVariacaoModAceleracao - timestampMenorVariacaoModAceleracao;
+
+                                Toast.makeText(getApplicationContext(),
+                                        " Inf: " + Double.toString(menorVariacaoModAceleracao_Salto3) +
+                                        " Sup: " + Double.toString(maiorVariacaoModAceleracao_Salto3) +
+                                        " Tempo: " + Long.toString(tempoEntreMenorMaiorPico_Salto3), Toast.LENGTH_LONG).show();
 
                                 estadoAtualCalibracao = ESTADO_FINAL;
                                 passo_5.setImageResource(R.drawable.passo_05);
@@ -462,6 +554,33 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
                         break;
 
                     case ESTADO_FINAL:
+                        double mediaMenorVariacaoModAceleracao = (menorVariacaoModAceleracao_Salto1 + menorVariacaoModAceleracao_Salto2 + menorVariacaoModAceleracao_Salto3) / 3.0;
+                        double mediaMaiorVariacaoModAceleracao = (maiorVariacaoModAceleracao_Salto1 + maiorVariacaoModAceleracao_Salto2 + maiorVariacaoModAceleracao_Salto3) / 3.0;
+                        long somatorioTempoEntreMenorMaiorPico = 0;
+                        long mediaTempoEntreMenorMaiorPico = 0;
+
+                        if(tempoEntreMenorMaiorPico_Salto1 > 0)
+                            somatorioTempoEntreMenorMaiorPico += tempoEntreMenorMaiorPico_Salto1;
+                        else
+                            somatorioTempoEntreMenorMaiorPico += Integer.valueOf(prefCalibracao.getString(SharedPreferenceManager.CHAVE_TEMPO_ENTRE_MENOR_MAIOR_PICO, SharedPreferenceManager.VALOR_PADRAO_TEMPO_ENTRE_MENOR_MAIOR_PICO));
+
+                        if(tempoEntreMenorMaiorPico_Salto2 > 0)
+                            somatorioTempoEntreMenorMaiorPico += tempoEntreMenorMaiorPico_Salto2;
+                        else
+                            somatorioTempoEntreMenorMaiorPico += Integer.valueOf(prefCalibracao.getString(SharedPreferenceManager.CHAVE_TEMPO_ENTRE_MENOR_MAIOR_PICO, SharedPreferenceManager.VALOR_PADRAO_TEMPO_ENTRE_MENOR_MAIOR_PICO));
+
+                        if(tempoEntreMenorMaiorPico_Salto3 > 0)
+                            somatorioTempoEntreMenorMaiorPico += tempoEntreMenorMaiorPico_Salto3;
+                        else
+                            somatorioTempoEntreMenorMaiorPico += Integer.valueOf(prefCalibracao.getString(SharedPreferenceManager.CHAVE_TEMPO_ENTRE_MENOR_MAIOR_PICO, SharedPreferenceManager.VALOR_PADRAO_TEMPO_ENTRE_MENOR_MAIOR_PICO));
+
+                        mediaTempoEntreMenorMaiorPico = somatorioTempoEntreMenorMaiorPico / 3;
+
+                        // Salvando os dados da calibracao nas preferencias do aplicativo...
+                        prefCalibracao.edit().putString(SharedPreferenceManager.CHAVE_MENOR_PICO_INFERIOR, Double.toString(mediaMenorVariacaoModAceleracao)).apply();
+                        prefCalibracao.edit().putString(SharedPreferenceManager.CHAVE_MAIOR_PICO_INFERIOR, Double.toString(mediaMaiorVariacaoModAceleracao)).apply();
+                        prefCalibracao.edit().putString(SharedPreferenceManager.CHAVE_TEMPO_ENTRE_MENOR_MAIOR_PICO, Long.toString(mediaTempoEntreMenorMaiorPico)).apply();
+
                         resetarVariaveisCalibracao();
 
                         if(!objRingFimCalibracao.isPlaying()) /** EMITINDO ALERTA SONORO PARA INDICAR O FIM DO PROCESSO DE CALIBRACAO... **/
