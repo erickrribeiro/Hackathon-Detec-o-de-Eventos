@@ -18,10 +18,12 @@
     <string name="title">Desmaio Detectado!</string>
     <string name="msg_notificacao">Um possível desmaio foi detectado! Enviando SMS ao fim da contagem...</string>
     <string name="notificacao_texto">Monitorando possível ataque</string>
-    <string name="title_activity_activity_calibrar">Processo de Calibração</string>
     <string name="title_activity_tempo_alerta">Tempo de Alerta</string>
     <string name="txt_monitoramento_desligado">Monitoramento desligado!</string>
     <string name="txt_monitoramento_ligado">Monitoramento ligado!</string>
     <string name="title_activity_configuracao_contatos">Configuração dos Contatos</string>
     <string name="title_activity_configuracoes">Configurações</string>
+
+    <string name="title_activity_activity_calibrar">Calibrar</string>
+    <string name="button_iniciar_calibracao">Iniciar Calibração</string>
 </resources>
