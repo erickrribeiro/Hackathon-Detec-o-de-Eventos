@@ -12,7 +12,7 @@ import java.util.Stack;
 
 import erickribeiro.incidentdetector.util.ManagerLogs;
 
-public class EpilepsyHeuristicModerado {
+public class IncidentHeuristicModerado {
 
     private final boolean MODO_DEBUG = true;
 
@@ -56,12 +56,12 @@ public class EpilepsyHeuristicModerado {
     double maiorModuloAceleracao = 0;
     double maiorModuloGiroscopio = 0;
 
-    private final double LIMITE_ACELERACAO_PICO_INFERIOR = 5;
-    private final double LIMITE_ACELERACAO_PICO_SUPERIOR = 17;
+    private double LIMITE_ACELERACAO_PICO_INFERIOR = 5;
+    private double LIMITE_ACELERACAO_PICO_SUPERIOR = 17;
     private final double MARGEM_ERRO_AMPLITUDE_ACELERACAO = 13;
     private final double MARGEM_ERRO_AMOSTRAGEM_ACELERACAO_SINAL_ESTABILIZADO = 0.8;
 
-    private final int MARGEM_ERRO_TEMPO_MINIMO_QUEDA_DESMAIO = 40;
+    private int MARGEM_ERRO_TEMPO_MINIMO_QUEDA_DESMAIO = 40;
     private final int MARGEM_ERRO_TEMPO_MINIMO_VALIDACAO_DESMAIO = 1000;
     private final int MARGEM_ERRO_TEMPO_TOTAL_VALIDACAO_DESMAIO = 6000;
     private final int QTD_TOTAL_AMOSTRAGEM_ACELERACAO = 60;
@@ -115,11 +115,11 @@ public class EpilepsyHeuristicModerado {
     private ManagerLogs managerLogs;
 
     // Construtor da classe...
-    public EpilepsyHeuristicModerado(Context context, boolean habilitarLogs) {
+    public IncidentHeuristicModerado(Context context, boolean habilitarLogs) {
         managerLogs =  new ManagerLogs();
 
         /********************************************************************************
-         *			HEURISTICA DE DETECCAO DE DESMAIOS E ATAQUES EPILEPTICOS			*
+         *			HEURISTICA DE DETECCAO DE DESMAIOS E QUEDAS             			*
          ********************************************************************************/
         flagHabilitarLogs = habilitarLogs;
         flagGyroscopeAtivado = false;

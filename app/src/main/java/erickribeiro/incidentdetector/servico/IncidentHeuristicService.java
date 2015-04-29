@@ -15,16 +15,16 @@ import android.widget.Toast;
 import erickribeiro.incidentdetector.MainActivity;
 import erickribeiro.incidentdetector.R;
 
-public class EpilepsyHeuristicService extends Service implements SensorEventListener{
+public class IncidentHeuristicService extends Service implements SensorEventListener{
 
-    public static String TAG = "EpilepsyHeuristicService";
+    public static String TAG = "IncidentHeuristicService";
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private Sensor mGyroscope;
     private Sensor mProximity;
 
-    private EpilepsyHeuristic objHeuristica;
+    private IncidentHeuristic objHeuristica;
 
     private boolean flagLogs = true;
 
@@ -39,12 +39,7 @@ public class EpilepsyHeuristicService extends Service implements SensorEventList
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
-        // LENDO DADOS DO BANCO DE DADOS DO APLICATIVO...
-        Context context = getApplicationContext();
-        SharedPreferences appDB = PreferenceManager.getDefaultSharedPreferences(context);
-        String perfilMonitoramento = appDB.getString("pref_key_perfis", String.valueOf(EpilepsyHeuristic.PERFIL_MODERADO));
-
-        objHeuristica = new EpilepsyHeuristic(getApplicationContext(), Integer.valueOf(perfilMonitoramento), flagLogs);
+        objHeuristica = new IncidentHeuristic(getApplicationContext(), flagLogs);
 
         // Criando o Servico...
         super.onCreate();

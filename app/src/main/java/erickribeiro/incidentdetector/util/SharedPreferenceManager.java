@@ -2,7 +2,7 @@ package erickribeiro.incidentdetector.util;
 
 import android.util.FloatMath;
 
-import erickribeiro.incidentdetector.servico.EpilepsyHeuristic;
+import erickribeiro.incidentdetector.servico.IncidentHeuristic;
 
 /**
  * Created by erickribeiro on 01/03/15.
@@ -10,9 +10,6 @@ import erickribeiro.incidentdetector.servico.EpilepsyHeuristic;
 public interface SharedPreferenceManager {
     String CHAVE_DURACAO = "pref_key_alerta";
     String VALOR_PADRAO_DURACAO = "60";
-
-    String CHAVE_PERFIL = "pref_key_perfis";
-    String VALOR_PADRAO_PERFIL = String.valueOf(EpilepsyHeuristic.PERFIL_MODERADO);
 
     String CHAVE_ATIVADO = "pref_key_inicio";
     boolean VALOR_PADRAO_ATIVADO = false;

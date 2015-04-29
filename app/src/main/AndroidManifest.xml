@@ -36,7 +36,7 @@
         </activity>
 
         <service
-            android:name=".servico.EpilepsyHeuristicService"
+            android:name=".servico.IncidentHeuristicService"
             android:enabled="true" />
 
         <activity

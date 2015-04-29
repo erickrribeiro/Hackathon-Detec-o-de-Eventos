@@ -29,7 +29,7 @@ import android.widget.TextView;
 
 import erickribeiro.incidentdetector.configuracao.Contato;
 import erickribeiro.incidentdetector.databe.HistoryContract;
-import erickribeiro.incidentdetector.servico.EpilepsyHeuristicService;
+import erickribeiro.incidentdetector.servico.IncidentHeuristicService;
 import erickribeiro.incidentdetector.util.GPSTracker;
 import erickribeiro.incidentdetector.util.SharedPreferenceManager;
 
@@ -246,9 +246,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 
     private void toggleService(){
         Context context = getApplicationContext();
-        Intent intent = new Intent(context, EpilepsyHeuristicService.class);
+        Intent intent = new Intent(context, IncidentHeuristicService.class);
         // Try to stop the service if it is already running
-        intent.addCategory(EpilepsyHeuristicService.TAG);
+        intent.addCategory(IncidentHeuristicService.TAG);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
@@ -266,8 +266,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
     }
 
     private void stopSensing(){
-        Intent intent = new Intent(getApplicationContext(), EpilepsyHeuristicService.class);
-        intent.addCategory(EpilepsyHeuristicService.TAG);
+        Intent intent = new Intent(getApplicationContext(), IncidentHeuristicService.class);
+        intent.addCategory(IncidentHeuristicService.TAG);
         stopService(intent);
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotifyManager.cancelAll();

@@ -17,7 +17,7 @@ import java.util.List;
 
 import erickribeiro.incidentdetector.MainActivity;
 import erickribeiro.incidentdetector.R;
-import erickribeiro.incidentdetector.servico.EpilepsyHeuristicService;
+import erickribeiro.incidentdetector.servico.IncidentHeuristicService;
 import erickribeiro.incidentdetector.util.GPSTracker;
 
 /***
@@ -79,7 +79,7 @@ public class Contato {
             NotificationManager mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotifyManager.notify(ID+i, mBuilder.build());
 
-            Log.d(EpilepsyHeuristicService.TAG, "[Contato] nome: "+destino );
+            Log.d(IncidentHeuristicService.TAG, "[Contato] nome: "+destino );
         }
 
     }
