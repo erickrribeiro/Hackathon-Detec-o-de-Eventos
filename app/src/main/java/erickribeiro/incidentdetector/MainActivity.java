@@ -81,7 +81,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
         imgAlerta.setOnClickListener(this);
         imgAgenda.setOnClickListener(this);
 
-        showDialogDesmaio();
+        //showDialogDesmaio();
 
         /** Verificando se houve algum desmaio detectado pelo sistema de monitoramento... **/
         if(getIntent().hasExtra("flagDesmaioDetectadoMonitoramento")) {

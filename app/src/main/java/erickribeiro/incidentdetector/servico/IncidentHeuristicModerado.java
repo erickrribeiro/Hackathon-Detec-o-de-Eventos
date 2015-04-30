@@ -52,7 +52,7 @@ public class IncidentHeuristicModerado {
     private double LIMITE_ACELERACAO_PICO_INFERIOR = 7;
     private double LIMITE_ACELERACAO_PICO_SUPERIOR = 15;
     private final double MARGEM_ERRO_AMPLITUDE_ACELERACAO = 12;
-    private final double MARGEM_ERRO_AMOSTRAGEM_ACELERACAO_SINAL_ESTABILIZADO = 2.0;//TODO: 0.8
+    private final double MARGEM_ERRO_AMOSTRAGEM_ACELERACAO_SINAL_ESTABILIZADO = 1.5;//TODO: 0.8
 
     private int MARGEM_ERRO_TEMPO_MINIMO_ENTRE_PICOS_QUEDA = 40;
     private final int MARGEM_ERRO_TEMPO_MINIMO_VALIDACAO_QUEDA = 1000;
@@ -165,7 +165,7 @@ public class IncidentHeuristicModerado {
         switch (typeSensor) {
             case Sensor.TYPE_PROXIMITY:
                 proximityValue = event.values[0];
-                if(proximityValue < 1)
+                if(proximityValue <= 3)
                     flagCelularPresoAoCorpo = true;
                 else
                     flagCelularPresoAoCorpo = false;
