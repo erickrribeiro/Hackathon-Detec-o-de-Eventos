@@ -23,7 +23,7 @@ public class ManagerLogs {
         this.keyLogFile = getKeyLogFile();
     }
 
-    public void createAccelerometerLogFile(Double miliTimeAtual, Double x, Double y, Double z, Double moduloVetor, Double velocidadeFinal)
+    public void createAccelerometerLogFile(Double miliTimeAtual, Double x, Double y, Double z, Double moduloVetor)
     {
         try{
             File logDirectory = new File(this.pathOftheLogFile);
@@ -47,9 +47,6 @@ public class ManagerLogs {
             escreverLog.write(CATACTER_SEPARADOR_ARQ_LOGS.getBytes());
 
             escreverLog.write(Double.toString(moduloVetor).getBytes());
-            escreverLog.write(CATACTER_SEPARADOR_ARQ_LOGS.getBytes());
-
-            escreverLog.write(Double.toString(velocidadeFinal).getBytes());
             escreverLog.write("\n".getBytes());
 
             escreverLog.flush();

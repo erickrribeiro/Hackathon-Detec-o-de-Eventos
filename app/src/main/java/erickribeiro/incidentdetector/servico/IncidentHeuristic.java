@@ -3,9 +3,13 @@ package erickribeiro.incidentdetector.servico;
 import android.content.Context;
 import android.hardware.SensorEvent;
 import android.util.Log;
+import android.widget.Toast;
 
 public class IncidentHeuristic {
     private IncidentHeuristicModerado objPerfilModerado;
+
+    private final double TAXA_ACEITACAO_PROBABILIDADE_QUEDA = 50; //PORCENTAGEM -> VALORES ENTRE: [0-100]
+    private Context objContext;
 
     /**
      * Construtor da classe
@@ -18,7 +22,10 @@ public class IncidentHeuristic {
             Log.d("Los", "A coleta de logs foi ativada.");
         }
 
-        this.objPerfilModerado = new IncidentHeuristicModerado(context, habilitarLogs);
+        // Inicializando o servico...
+        objContext = context;
+
+        this.objPerfilModerado = new IncidentHeuristicModerado(objContext, habilitarLogs);
     }
 
     /**
@@ -27,9 +34,15 @@ public class IncidentHeuristic {
      * @param event
      * @return
      */
-
     public boolean monitorar(SensorEvent event) {
-        //TODO: O MONITOR DEVERÁ RETORNAR UMA PROBABILIDADE DE ESTAR OCORRENDO UMA QUEDA E/OU DESMAIO...
-        return(this.objPerfilModerado.monitorar(event));
+        double probabilidadeQueda = this.objPerfilModerado.monitorar(event);
+
+        if(probabilidadeQueda >= TAXA_ACEITACAO_PROBABILIDADE_QUEDA)
+        {
+            Toast.makeText(objContext, "IncidentDetector - PROBABILIDADE_DESMAIO(" + Double.toString(probabilidadeQueda) + ")", Toast.LENGTH_SHORT).show();
+            return(true);
+        }
+
+        return(false);
     }
 }

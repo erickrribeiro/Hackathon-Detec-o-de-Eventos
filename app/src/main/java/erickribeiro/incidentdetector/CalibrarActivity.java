@@ -174,12 +174,12 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
 
                 if(qtdClicksPasso5 == QTD_CLICKS_EXIBIR_TOAST_IMAGEM_5) {
                     double pref_key_menor_pico_inferior = Double.valueOf(prefCalibracao.getString(SharedPreferenceManager.CHAVE_MENOR_PICO_INFERIOR, SharedPreferenceManager.VALOR_PADRAO_MENOR_PICO_INFERIOR));
-                    double pref_key_maior_pico_inferior = Double.valueOf(prefCalibracao.getString(SharedPreferenceManager.CHAVE_MAIOR_PICO_INFERIOR, SharedPreferenceManager.VALOR_PADRAO_MAIOR_PICO_INFERIOR));
+                    double pref_key_maior_pico_superior = Double.valueOf(prefCalibracao.getString(SharedPreferenceManager.CHAVE_MAIOR_PICO_SUPERIOR, SharedPreferenceManager.VALOR_PADRAO_MAIOR_PICO_SUPERIOR));
                     int pref_key_tempo_entre_menor_maior_pico = Integer.valueOf(prefCalibracao.getString(SharedPreferenceManager.CHAVE_TEMPO_ENTRE_MENOR_MAIOR_PICO, SharedPreferenceManager.VALOR_PADRAO_TEMPO_ENTRE_MENOR_MAIOR_PICO));
 
                     Toast.makeText(getApplicationContext(),
                             " Inf: " + Double.toString(pref_key_menor_pico_inferior) +
-                            " Sup: " + Double.toString(pref_key_maior_pico_inferior) +
+                            " Sup: " + Double.toString(pref_key_maior_pico_superior) +
                             " Tempo: " + Integer.toString(pref_key_tempo_entre_menor_maior_pico), Toast.LENGTH_LONG).show();
 
                     qtdClicksPasso5 = 0;
@@ -578,7 +578,7 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
 
                         // Salvando os dados da calibracao nas preferencias do aplicativo...
                         prefCalibracao.edit().putString(SharedPreferenceManager.CHAVE_MENOR_PICO_INFERIOR, Double.toString(mediaMenorVariacaoModAceleracao)).apply();
-                        prefCalibracao.edit().putString(SharedPreferenceManager.CHAVE_MAIOR_PICO_INFERIOR, Double.toString(mediaMaiorVariacaoModAceleracao)).apply();
+                        prefCalibracao.edit().putString(SharedPreferenceManager.CHAVE_MAIOR_PICO_SUPERIOR, Double.toString(mediaMaiorVariacaoModAceleracao)).apply();
                         prefCalibracao.edit().putString(SharedPreferenceManager.CHAVE_TEMPO_ENTRE_MENOR_MAIOR_PICO, Long.toString(mediaTempoEntreMenorMaiorPico)).apply();
 
                         resetarVariaveisCalibracao();
