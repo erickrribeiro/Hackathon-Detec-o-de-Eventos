@@ -21,7 +21,7 @@ public interface SharedPreferenceManager {
     String VALOR_PADRAO_MAIOR_PICO_SUPERIOR = "15.0"; // força G
 
     String CHAVE_TEMPO_ENTRE_MENOR_MAIOR_PICO = "pref_key_tempo_entre_menor_maior_pico";
-    String VALOR_PADRAO_TEMPO_ENTRE_MENOR_MAIOR_PICO = "60"; // milissegundos
+    String VALOR_PADRAO_TEMPO_ENTRE_MENOR_MAIOR_PICO = "40"; // milissegundos
 
     public int getDuration();
 }

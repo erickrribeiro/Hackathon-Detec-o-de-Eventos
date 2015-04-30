@@ -8,7 +8,7 @@ import android.widget.Toast;
 public class IncidentHeuristic {
     private IncidentHeuristicModerado objPerfilModerado;
 
-    private final double TAXA_ACEITACAO_PROBABILIDADE_QUEDA = 68; //PORCENTAGEM -> VALORES ENTRE: [0-100]
+    private final double TAXA_ACEITACAO_PROBABILIDADE_QUEDA = 50; //PORCENTAGEM -> VALORES ENTRE: [0-100]
     private Context objContext;
 
     /**

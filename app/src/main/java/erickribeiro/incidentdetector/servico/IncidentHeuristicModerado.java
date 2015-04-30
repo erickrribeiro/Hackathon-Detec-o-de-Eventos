@@ -1,5 +1,6 @@
 package erickribeiro.incidentdetector.servico;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -8,10 +9,12 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Stack;
 
+import erickribeiro.incidentdetector.R;
 import erickribeiro.incidentdetector.util.ManagerLogs;
 import erickribeiro.incidentdetector.util.SharedPreferenceManager;
 
@@ -33,6 +36,9 @@ public class IncidentHeuristicModerado {
     private final int ESTADO_4 = 4;
     private int desmaioEstadoAtual = ESTADO_INICIAL;
 
+    private boolean flagObterMenorPicoInferior = false;
+    private boolean flagObterMaiorPicoSuperior = false;
+
     long desmaioTimestampEstado1 = 0;
     long desmaioTimestampEstado2 = 0;
     long desmaioTimestampEstado3 = 0;
@@ -45,10 +51,10 @@ public class IncidentHeuristicModerado {
 
     private double LIMITE_ACELERACAO_PICO_INFERIOR = 7;
     private double LIMITE_ACELERACAO_PICO_SUPERIOR = 15;
-    private final double MARGEM_ERRO_AMPLITUDE_ACELERACAO = 10;
-    private final double MARGEM_ERRO_AMOSTRAGEM_ACELERACAO_SINAL_ESTABILIZADO = 0.8;
+    private final double MARGEM_ERRO_AMPLITUDE_ACELERACAO = 12;
+    private final double MARGEM_ERRO_AMOSTRAGEM_ACELERACAO_SINAL_ESTABILIZADO = 2.0;//TODO: 0.8
 
-    private int MARGEM_ERRO_TEMPO_MINIMO_ENTRE_PICOS_QUEDA = 60;
+    private int MARGEM_ERRO_TEMPO_MINIMO_ENTRE_PICOS_QUEDA = 40;
     private final int MARGEM_ERRO_TEMPO_MINIMO_VALIDACAO_QUEDA = 1000;
     private final int MARGEM_ERRO_TEMPO_TOTAL_VALIDACAO_QUEDA = 6000;
     private final int QTD_TOTAL_AMOSTRAGEM_ACELERACAO = 60;
@@ -164,7 +170,12 @@ public class IncidentHeuristicModerado {
                 else
                     flagCelularPresoAoCorpo = false;
 
-                Toast.makeText(objContext, "IncidentDetector - Proximidade: " + Double.toString(proximityValue), Toast.LENGTH_SHORT).show();
+
+                if (MODO_DEBUG) {
+                    String msgText = "IncidentDetector - Proximidade: " + Double.toString(proximityValue);
+                    Log.d("[INCIDENT_DEBUG]", msgText);
+                    Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case Sensor.TYPE_ACCELEROMETER:
@@ -215,8 +226,8 @@ public class IncidentHeuristicModerado {
                 }
                 else
                 {
-                    menorModuloAceleracao = ACELERACAO_NORMAL_GRAVIDADE; // Aceleracao normal da gravidade.
-                    maiorModuloAceleracao = 0;
+//                    menorModuloAceleracao = ACELERACAO_NORMAL_GRAVIDADE; // Aceleracao normal da gravidade.
+//                    maiorModuloAceleracao = 0;
 
                     // Coletando as variacoes de aceleracao de cada eixo (X, Y e Z) antes da queda.
                     int qtdAmostragemEixo = eixoNormalAceleracaoAntesX.size();
@@ -296,35 +307,61 @@ public class IncidentHeuristicModerado {
             switch (desmaioEstadoAtual) {
                 case ESTADO_INICIAL:
                     desmaioEstadoAtual = ESTADO_INICIAL;
-                    if(flagCelularPresoAoCorpo && moduloVetorAceleracao <= LIMITE_ACELERACAO_PICO_INFERIOR)
-                    {
-                        if(MODO_DEBUG)
-                            Toast.makeText(objContext, "IncidentDetector - ESTADO_INICIAL -> ESTADO_1 - P.INF(" + Double.toString(moduloVetorAceleracao) + ")", Toast.LENGTH_SHORT).show();
+                    if(flagCelularPresoAoCorpo) {
+                        if (flagObterMenorPicoInferior) {
+                            if (moduloVetorAceleracao <= menorModuloAceleracao) {
+                                desmaioTimestampEstado1 = timestampAtualSistema;
+                                menorModuloAceleracao = moduloVetorAceleracao;
+                            } else {
+                                flagObterMenorPicoInferior = false;
+                                if (MODO_DEBUG) {
+                                    String msgText = "IncidentDetector - ESTADO_INICIAL -> ESTADO_1 - P.INF(" + Double.toString(menorModuloAceleracao) + ")";
+                                    Log.d("[INCIDENT_DEBUG]", msgText);
+                                    Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
+                                }
 
-                        desmaioEstadoAtual = ESTADO_1;
-                        desmaioTimestampEstado1 = timestampAtualSistema;
-                        menorModuloAceleracao = moduloVetorAceleracao;
+                                desmaioEstadoAtual = ESTADO_1;
+                            }
+                        } else if (moduloVetorAceleracao <= LIMITE_ACELERACAO_PICO_INFERIOR) {
+                            flagObterMenorPicoInferior = true;
+                            desmaioTimestampEstado1 = timestampAtualSistema;
+                            menorModuloAceleracao = moduloVetorAceleracao;
+                        }
                     }
                     break;
 
                 case ESTADO_1:
-                    if(flagCelularPresoAoCorpo && moduloVetorAceleracao >= LIMITE_ACELERACAO_PICO_SUPERIOR) // Verifica se alcancou o pico superior
-                    {
-                        if(MODO_DEBUG)
-                            Toast.makeText(objContext, "IncidentDetector - ESTADO_1 -> ESTADO_2 - P.SUP(" + Double.toString(moduloVetorAceleracao) + ")", Toast.LENGTH_SHORT).show();
+                    if(flagCelularPresoAoCorpo) {
+                        if (flagObterMaiorPicoSuperior) {
+                            if (moduloVetorAceleracao >= maiorModuloAceleracao) {
+                                desmaioTimestampEstado2 = timestampAtualSistema;
+                                maiorModuloAceleracao = moduloVetorAceleracao;
+                            } else {
+                                flagObterMaiorPicoSuperior = false;
+                                if (MODO_DEBUG) {
+                                    String msgText = "IncidentDetector - ESTADO_1 -> ESTADO_2 - P.SUP(" + Double.toString(maiorModuloAceleracao) + ")";
+                                    Log.d("[INCIDENT_DEBUG]", msgText);
+                                    Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
+                                }
 
-                        desmaioEstadoAtual = ESTADO_2;
-                        desmaioTimestampEstado2 = timestampAtualSistema;
-                        maiorModuloAceleracao = moduloVetorAceleracao;
-                    }
-                    else if(maiorVariacaoAceleracao <= MARGEM_ERRO_AMOSTRAGEM_ACELERACAO_SINAL_ESTABILIZADO) // Verificar se o sinal do acelerometro estabilizou... atraves de uma margem de erro em relacao a normal 9,8
-                    {
-                        //if(MODO_DEBUG)
-                        //Toast.makeText(objContext, "IncidentDetector - ESTADO_1 -> ESTADO_INICIAL", Toast.LENGTH_SHORT).show();
+                                desmaioEstadoAtual = ESTADO_2;
+                            }
+                        } else if (moduloVetorAceleracao >= LIMITE_ACELERACAO_PICO_SUPERIOR) {
+                            flagObterMaiorPicoSuperior = true;
+                            desmaioTimestampEstado2 = timestampAtualSistema;
+                            maiorModuloAceleracao = moduloVetorAceleracao;
+                        } else if(maiorVariacaoAceleracao <= MARGEM_ERRO_AMOSTRAGEM_ACELERACAO_SINAL_ESTABILIZADO) // Verificar se o sinal do acelerometro estabilizou... atraves de uma margem de erro em relacao a normal 9,8
+                        {
+                            if(MODO_DEBUG) {
+                                String msgText = "IncidentDetector - ESTADO_1 -> ESTADO_INICIAL";
+                                Log.d("[INCIDENT_DEBUG]", msgText);
+                                Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
+                            }
 
-                        desmaioEstadoAtual = ESTADO_INICIAL;
-                        resetarVariaveisMonitoramentoDesmaio();
-                        return(false);
+                            desmaioEstadoAtual = ESTADO_INICIAL;
+                            resetarVariaveisMonitoramentoDesmaio();
+                            return(false);
+                        }
                     }
                     break;
 
@@ -338,14 +375,20 @@ public class IncidentHeuristicModerado {
                         if(tempoTotalEntrePicosQueda >= MARGEM_ERRO_TEMPO_MINIMO_ENTRE_PICOS_QUEDA) // Validando tempo minimo de queda...
                         {
                             desmaioEstadoAtual = ESTADO_3;
-                            if(MODO_DEBUG)
-                                Toast.makeText(objContext, "IncidentDetector - ESTADO_2 -> ESTADO_3 - T.PICOS(" + Long.toString(tempoTotalEntrePicosQueda) + ")", Toast.LENGTH_SHORT).show();
+                            if(MODO_DEBUG) {
+                                String msgText = "IncidentDetector - ESTADO_2 -> ESTADO_3 - T.PICOS(" + Long.toString(tempoTotalEntrePicosQueda) + ")";
+                                Log.d("[INCIDENT_DEBUG]", msgText);
+                                Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
+                            }
                         }
                         else
                         {
                             desmaioEstadoAtual = ESTADO_INICIAL;
-                            if(MODO_DEBUG)
-                                Toast.makeText(objContext, "IncidentDetector - ESTADO_2 -> ESTADO_INICIAL - T.PICOS(" + Long.toString(tempoTotalEntrePicosQueda) + ")", Toast.LENGTH_SHORT).show();
+                            if(MODO_DEBUG) {
+                                String msgText = "IncidentDetector - ESTADO_2 -> ESTADO_INICIAL - T.PICOS(" + Long.toString(tempoTotalEntrePicosQueda) + ")";
+                                Log.d("[INCIDENT_DEBUG]", msgText);
+                                Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
+                            }
 
                             resetarVariaveisMonitoramentoDesmaio();
                             return(false);
@@ -367,8 +410,9 @@ public class IncidentHeuristicModerado {
                     {
                         if(MODO_DEBUG)
                         {
-                            String msgText = " AMP(" + Double.toString(amplitudeAceleracao) + ") G("+Double.toString(maiorModuloGiroscopio)+")";
-                            Toast.makeText(objContext, "IncidentDetector - ESTADO_3 -> ESTADO_4 - " + msgText, Toast.LENGTH_SHORT).show();
+                            String msgText = "IncidentDetector - ESTADO_3 -> ESTADO_4 - AMP(" + Double.toString(amplitudeAceleracao) + ") G("+Double.toString(maiorModuloGiroscopio)+")";
+                            Log.d("[INCIDENT_DEBUG]", msgText);
+                            Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
                         }
 
                         long tempoTotalEntrePicosQueda = desmaioTimestampEstado2 - desmaioTimestampEstado1;
@@ -385,8 +429,9 @@ public class IncidentHeuristicModerado {
                         else
                         {
                             if(MODO_DEBUG) {
-                                String msgText = " AMP(" + Double.toString(amplitudeAceleracao) + ") G(" + Double.toString(maiorModuloGiroscopio) + ")";
-                                Toast.makeText(objContext, "IncidentDetector - ESTADO_3 -> ESTADO_INICIAL - " + msgText, Toast.LENGTH_SHORT).show();
+                                String msgText = "IncidentDetector - ESTADO_3 -> ESTADO_INICIAL - AMP(" + Double.toString(amplitudeAceleracao) + ") G(" + Double.toString(maiorModuloGiroscopio) + ")";
+                                Log.d("[INCIDENT_DEBUG]", msgText);
+                                Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
                             }
 
                             desmaioEstadoAtual = ESTADO_INICIAL;
@@ -397,8 +442,9 @@ public class IncidentHeuristicModerado {
                     else
                     {
                         if(MODO_DEBUG) {
-                            String msgText = " AMP(" + Double.toString(amplitudeAceleracao) + ") G(" + Double.toString(maiorModuloGiroscopio) + ")";
-                            Toast.makeText(objContext, "IncidentDetector - ESTADO_3 -> ESTADO_INICIAL" + msgText, Toast.LENGTH_SHORT).show();
+                            String msgText = "IncidentDetector - ESTADO_3 -> ESTADO_INICIAL - AMP(" + Double.toString(amplitudeAceleracao) + ") G(" + Double.toString(maiorModuloGiroscopio) + ")";
+                            Log.d("[INCIDENT_DEBUG]", msgText);
+                            Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
                         }
 
                         desmaioEstadoAtual = ESTADO_INICIAL;
@@ -421,8 +467,11 @@ public class IncidentHeuristicModerado {
 
                             if(contadorMargemErroDesmaio > MARGEM_ERRO_CONTADOR_VARIACOES_QUEDA)
                             {
-                                if(MODO_DEBUG)
-                                    Toast.makeText(objContext, "IncidentDetector - ESTADO_4 -> ESTADO_INICIAL", Toast.LENGTH_SHORT).show();
+                                if(MODO_DEBUG) {
+                                    String msgText = "IncidentDetector - ESTADO_4 -> ESTADO_INICIAL";
+                                    Log.d("[INCIDENT_DEBUG]", msgText);
+                                    Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
+                                }
 
                                 desmaioEstadoAtual = ESTADO_INICIAL;
                                 resetarVariaveisMonitoramentoDesmaio();
@@ -439,12 +488,17 @@ public class IncidentHeuristicModerado {
                             {
                                 if(MODO_DEBUG)
                                 {
-                                    String msgTexto = "ANTES(" + Integer.toString(eixoNormalAntes) + ") DEPOIS(" + Integer.toString(eixoNormalDepois) + ")";
-                                    Toast.makeText(objContext, "IncidentDetector - ESTADO_4 -> " + msgTexto, Toast.LENGTH_SHORT).show();
+                                    String msgText = "IncidentDetector - ESTADO_4 -> ANTES(" + Integer.toString(eixoNormalAntes) + ") DEPOIS(" + Integer.toString(eixoNormalDepois) + ")";
+                                    Log.d("[INCIDENT_DEBUG]", msgText);
+                                    Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
                                 }
 
                                 if(MODO_DEBUG)
-                                    Toast.makeText(objContext, "IncidentDetector - ESTADO_4 -> ESTADO_INICIAL -> DESMAIO DETECTADO(1)", Toast.LENGTH_SHORT).show();
+                                {
+                                    String msgText = "IncidentDetector - ESTADO_4 -> ESTADO_INICIAL -> DESMAIO DETECTADO(1)";
+                                    Log.d("[INCIDENT_DEBUG]", msgText);
+                                    Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
+                                }
 
                                 desmaioEstadoAtual = ESTADO_INICIAL;
                                 resetarVariaveisMonitoramentoDesmaio();
@@ -453,7 +507,11 @@ public class IncidentHeuristicModerado {
                             }
 
                             if(MODO_DEBUG)
-                                Toast.makeText(objContext, "IncidentDetector - ESTADO_4 -> ESTADO_INICIAL -> DESMAIO DETECTADO(2)", Toast.LENGTH_SHORT).show();
+                            {
+                                String msgText = "IncidentDetector - ESTADO_4 -> ESTADO_INICIAL -> DESMAIO DETECTADO(2)";
+                                Log.d("[INCIDENT_DEBUG]", msgText);
+                                Toast.makeText(objContext, msgText, Toast.LENGTH_SHORT).show();
+                            }
 
                             desmaioEstadoAtual = ESTADO_INICIAL;
                             resetarVariaveisMonitoramentoDesmaio();
@@ -504,14 +562,22 @@ public class IncidentHeuristicModerado {
         else
             probabilidadeTempoEntrePicos = ((tempoTotalEntreMenorMaiorPico - LIMITE_ACELERACAO_PICO_SUPERIOR)*100)/(pref_key_tempo_entre_menor_maior_pico - LIMITE_ACELERACAO_PICO_SUPERIOR);
 
-        probabilidadeFinal = (3*probabilidadePicoInferior + probabilidadePicoSuperior + 2*probabilidadeTempoEntrePicos) / 6;
+        probabilidadeFinal = (4*probabilidadePicoInferior + 2*probabilidadePicoSuperior + probabilidadeTempoEntrePicos) / 7;
 
-        if(MODO_DEBUG)
-            Toast.makeText(objContext,
-                    "IncidentDetector - PF(" + Double.toString(probabilidadeFinal) + ") " +
+        if(MODO_DEBUG) {
+            Log.d("[INCIDENT_DEBUG]", "IncidentDetector - " +
+                    "PF(" + Double.toString(probabilidadeFinal) + ") " +
                     "P1(" + Double.toString(probabilidadePicoInferior) + ") " +
                     "P2(" + Double.toString(probabilidadePicoSuperior) + ") " +
-                    "P3(" + Double.toString(probabilidadeTempoEntrePicos) + ")", Toast.LENGTH_SHORT).show();
+                    "P3(" + Double.toString(probabilidadeTempoEntrePicos) + ")");
+
+            Toast.makeText(objContext,
+                    "IncidentDetector - " +
+                            "PF(" + Double.toString(probabilidadeFinal) + ") " +
+                            "P1(" + Double.toString(probabilidadePicoInferior) + ") " +
+                            "P2(" + Double.toString(probabilidadePicoSuperior) + ") " +
+                            "P3(" + Double.toString(probabilidadeTempoEntrePicos) + ")", Toast.LENGTH_LONG).show();
+        }
 
         if(probabilidadeFinal >= taxaAceitacaoProbabilidadeQueda)
             return(true);
@@ -543,6 +609,8 @@ public class IncidentHeuristicModerado {
         maxVariacaoGyroscopeEixoX = 0;
         maxVariacaoGyroscopeEixoY = 0;
         maxVariacaoGyroscopeEixoZ = 0;
+
+        flagObterMenorPicoInferior = false;
     }
 
     /**

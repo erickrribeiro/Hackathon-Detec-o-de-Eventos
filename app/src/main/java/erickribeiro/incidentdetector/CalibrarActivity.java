@@ -75,7 +75,7 @@ public class CalibrarActivity extends ActionBarActivity implements OnClickListen
     private long tempoEntreMenorMaiorPico_Salto3 = 0;
 
     private final double MARGEM_ERRO_AMOSTRAGEM_ACELERACAO_SINAL_ESTABILIZADO = 0.8;
-    private final int JANELA_TEMPO_AMOSTRAGEM_ACELERACAO = 4; //(EM MILISSEGUNDOS) JANELA DE TEMPO DE CAPTURA DOS DADOS DA ACELERACAO.
+    private final int JANELA_TEMPO_AMOSTRAGEM_ACELERACAO = 3; //(EM MILISSEGUNDOS) JANELA DE TEMPO DE CAPTURA DOS DADOS DA ACELERACAO.
     private final int QTD_MAX_AMOSTRAGEM_ACELERACAO = 500; // JANELA DE AMOSTRAGEM DA ACELERACAO PODERÁ TER NO MAXIMO 500 DADOS.
     Stack<Double> arrayAmostragemAceleracao = new Stack<Double>();
     Stack<Double> arrayTimelineAceleracao = new Stack<Double>();
