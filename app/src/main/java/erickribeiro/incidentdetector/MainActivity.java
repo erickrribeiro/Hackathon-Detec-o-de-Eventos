@@ -38,6 +38,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
     // Iniciando objetos de musica do android...
     Ringtone objRing;
     Button btnAlertDesmaio;
+
     /**
      * Variavel utilizadas na localizacao
      */
@@ -79,6 +80,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
         imgCalibracao.setOnClickListener(this);
         imgAlerta.setOnClickListener(this);
         imgAgenda.setOnClickListener(this);
+
+        showDialogDesmaio();
 
         /** Verificando se houve algum desmaio detectado pelo sistema de monitoramento... **/
         if(getIntent().hasExtra("flagDesmaioDetectadoMonitoramento")) {

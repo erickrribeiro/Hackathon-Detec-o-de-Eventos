@@ -32,7 +32,8 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait">
         </activity>
 
         <service
@@ -46,19 +47,23 @@
         </activity>
         <activity
             android:name=".TempoAlertaActivity"
-            android:label="@string/title_activity_tempo_alerta" >
+            android:label="@string/title_activity_tempo_alerta"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ConfiguracaoContatosActivity"
-            android:label="@string/title_activity_configuracao_contatos" >
+            android:label="@string/title_activity_configuracao_contatos"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".HistoryActivity"
-            android:label="@string/title_activity_history" >
+            android:label="@string/title_activity_history"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ConfiguracoesActivity"
-            android:label="@string/title_activity_configuracoes" >
+            android:label="@string/title_activity_configuracoes"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
