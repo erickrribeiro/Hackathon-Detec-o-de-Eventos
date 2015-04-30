@@ -8,7 +8,7 @@ import android.widget.Toast;
 public class IncidentHeuristic {
     private IncidentHeuristicModerado objPerfilModerado;
 
-    private final double TAXA_ACEITACAO_PROBABILIDADE_QUEDA = 50; //PORCENTAGEM -> VALORES ENTRE: [0-100]
+    private final double TAXA_ACEITACAO_PROBABILIDADE_QUEDA = 68; //PORCENTAGEM -> VALORES ENTRE: [0-100]
     private Context objContext;
 
     /**
@@ -35,14 +35,6 @@ public class IncidentHeuristic {
      * @return
      */
     public boolean monitorar(SensorEvent event) {
-        double probabilidadeQueda = this.objPerfilModerado.monitorar(event);
-
-        if(probabilidadeQueda >= TAXA_ACEITACAO_PROBABILIDADE_QUEDA)
-        {
-            Toast.makeText(objContext, "IncidentDetector - PROBABILIDADE_DESMAIO(" + Double.toString(probabilidadeQueda) + ")", Toast.LENGTH_SHORT).show();
-            return(true);
-        }
-
-        return(false);
+        return(this.objPerfilModerado.monitorar(event, TAXA_ACEITACAO_PROBABILIDADE_QUEDA));
     }
 }
